@@ -376,19 +376,8 @@ export function writeGeotiff(data, metadata) {
     .filter((key) => endsWith(key, 'GeoKey'))
     .sort((a, b) => name2code[a] - name2code[b]);
 
-  if (!metadata.GeoAsciiParams) {
-    let geoAsciiParams = '';
-    geoKeys.forEach((name) => {
-      const code = Number(name2code[name]);
-      const tagType = fieldTagTypes[code];
-      if (tagType === 'ASCII') {
-        geoAsciiParams += `${metadata[name].toString()}|`;
-      }
-    });
-    if (geoAsciiParams.length > 0) {
-      metadata.GeoAsciiParams = geoAsciiParams;
-    }
-  }
+  let geoAsciiParams = '';
+  const geoFloatArray = []; // to be converted to doubles
 
   if (!metadata.GeoKeyDirectory) {
     const NumberOfKeys = geoKeys.length;
@@ -405,14 +394,18 @@ export function writeGeotiff(data, metadata) {
         Count = 1;
         TIFFTagLocation = 0;
         valueOffset = metadata[geoKey];
-      // } else if (fieldTagTypes[KeyID] === 'DOUBLE') {
-      //   Count = 4;
-      //   TIFFTagLocation = Number(name2code.GeoDoubleParams);
-      //   valueOffset = metadata[geoKey];
-      } else if (geoKey === 'GeogCitationGeoKey') {
-        Count = metadata.GeoAsciiParams.length;
+      } else if (fieldTagTypes[KeyID] === 'DOUBLE') {
+        Count = 1;
+        TIFFTagLocation = Number(name2code.GeoDoubleParams);
+        valueOffset = geoFloatArray.length;
+        geoFloatArray.push(metadata[geoKey]);
+      } else if (fieldTagTypes[KeyID] === 'ASCII') {
+        const value = `${metadata[geoKey].toString()}|`;
+
+        Count = value.length;
         TIFFTagLocation = Number(name2code.GeoAsciiParams);
-        valueOffset = 0;
+        valueOffset = geoAsciiParams.length;
+        geoAsciiParams += value;
       } else {
         console.log(`[geotiff.js] couldn't get TIFFTagLocation for ${geoKey}`);
       }
@@ -420,6 +413,13 @@ export function writeGeotiff(data, metadata) {
       GeoKeyDirectory.push(Count);
       GeoKeyDirectory.push(valueOffset);
     });
+    if (geoAsciiParams.length > 0) {
+      metadata.GeoAsciiParams = geoAsciiParams;
+    }
+    if (geoFloatArray.length > 0) {
+      const floats = new Float64Array(geoFloatArray);
+      metadata.GeoDoubleParams = floats;
+    }
     metadata.GeoKeyDirectory = GeoKeyDirectory;
   }
 
