@@ -1,0 +1,37 @@
+{
+  "GTModelTypeGeoKey": 1,
+  "GTRasterTypeGeoKey": 1,
+  "GTCitationGeoKey": "unknown",
+  "GeographicTypeGeoKey": 32767,
+  "GeogCitationGeoKey": "GCS Name = unknown|Datum = Unknown based on WGS 84 ellipsoid|Primem = unknown|",
+  "GeogGeodeticDatumGeoKey": 32767,
+  "GeogAngularUnitsGeoKey": 9102,
+  "GeogEllipsoidGeoKey": 7030,
+  "GeogSemiMajorAxisGeoKey": 6378137,
+  "GeogInvFlatteningGeoKey": 298.257223563,
+  "GeogPrimeMeridianLongGeoKey": -94.98241139999999,
+  "ProjectedCSTypeGeoKey": 32767,
+  "ProjectionGeoKey": 32767,
+  "ProjCoordTransGeoKey": 1,
+  "ProjLinearUnitsGeoKey": 9003,
+  "ProjNatOriginLongGeoKey": 0,
+  "ProjNatOriginLatGeoKey": 45.04133919999998,
+  "ProjFalseEastingGeoKey": 0,
+  "ProjFalseNorthingGeoKey": 0,
+  "ProjScaleAtNatOriginGeoKey": 1,
+  "width": 99,
+  "height": 44,
+  "ModelPixelScale": [
+    30,
+    30,
+    0
+  ],
+  "ModelTiepoint": [
+    0,
+    0,
+    0,
+    -2527.371807757994,
+    -1328.442110045539,
+    0
+  ]
+}

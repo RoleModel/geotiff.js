@@ -435,7 +435,7 @@ export function writeGeotiff(data, metadata) {
       const code = Number(name2code[name]);
       const tagType = fieldTagTypes[code];
       if (tagType === 'ASCII') {
-        geoAsciiParams += `${metadata[name].toString()}\u0000`;
+        geoAsciiParams += `${metadata[name].toString()}|`;
       }
     });
     if (geoAsciiParams.length > 0) {
@@ -458,6 +458,10 @@ export function writeGeotiff(data, metadata) {
         Count = 1;
         TIFFTagLocation = 0;
         valueOffset = metadata[geoKey];
+      // } else if (fieldTagTypes[KeyID] === 'DOUBLE') {
+      //   Count = 4;
+      //   TIFFTagLocation = Number(name2code.GeoDoubleParams);
+      //   valueOffset = metadata[geoKey];
       } else if (geoKey === 'GeogCitationGeoKey') {
         Count = metadata.GeoAsciiParams.length;
         TIFFTagLocation = Number(name2code.GeoAsciiParams);
