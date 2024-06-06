@@ -1200,6 +1200,65 @@ describe('writeTests', () => {
     expect(normalize(fileDirectory.StripByteCounts)).to.equal(normalize(metadata.StripByteCounts));
     expect(fileDirectory.GDAL_NODATA).to.equal('0\u0000');
   });
+
+  it('should write metadata needed for user-defined projections', async () => {
+    const height = 12;
+    const width = 12;
+    const originalValues = range(height * width);
+
+    const metadata = {
+      width,
+      height,
+      ModelPixelScale: [0.031355, 0.031355, 0],
+      ModelTiepoint: [0, 0, 0, 11.331755000000001, 46.268645, 0],
+      GTModelTypeGeoKey: 2,
+      GTRasterTypeGeoKey: 1,
+      GDAL_NODATA: '0',
+      GTCitationGeoKey: 'unknown',
+      GeographicTypeGeoKey: 32767,
+      GeogCitationGeoKey: 'GCS Name = unknown|Datum = Unknown based on WGS 84 ellipsoid|Primem = unknown|',
+      GeogAngularUnitsGeoKey: 9102,
+      GeogEllipsoidGeoKey: 7030,
+      GeogSemiMajorAxisGeoKey: 6378137,
+      GeogInvFlatteningGeoKey: 298.257223563,
+      GeogPrimeMeridianLongGeoKey: -78.83325292198825,
+      ProjectedCSTypeGeoKey: 32767,
+      ProjectionGeoKey: 32767,
+      ProjCoordTransGeoKey: 1,
+      ProjLinearUnitsGeoKey: 9003,
+      ProjNatOriginLongGeoKey: 0,
+      ProjNatOriginLatGeoKey: 35.68798881647536,
+      ProjFalseEastingGeoKey: 0,
+      ProjFalseNorthingGeoKey: 0,
+      ProjScaleAtNatOriginGeoKey: 1,
+    };
+    const newGeoTiffAsBinaryData = await writeArrayBuffer(originalValues, metadata);
+    const newGeoTiff = await fromArrayBuffer(newGeoTiffAsBinaryData);
+    const image = await newGeoTiff.getImage();
+    const { fileDirectory } = image;
+    const geoKeys = image.getGeoKeys();
+
+    expect(fileDirectory.GeoAsciiParams).to.equal(
+      'unknown|GCS Name = unknown|Datum = Unknown based on WGS 84 ellipsoid|Primem = unknown||\u0000',
+    );
+    expect(geoKeys.GTCitationGeoKey).to.equal('unknown');
+    expect(geoKeys.GeographicTypeGeoKey).to.equal(32767);
+    expect(geoKeys.GeogCitationGeoKey).to.equal('GCS Name = unknown|Datum = Unknown based on WGS 84 ellipsoid|Primem = unknown|');
+    expect(geoKeys.GeogAngularUnitsGeoKey).to.equal(9102);
+    expect(geoKeys.GeogEllipsoidGeoKey).to.equal(7030);
+    expect(geoKeys.GeogSemiMajorAxisGeoKey).to.equal(6378137);
+    expect(geoKeys.GeogInvFlatteningGeoKey).to.equal(298.257223563);
+    expect(geoKeys.GeogPrimeMeridianLongGeoKey).to.equal(-78.83325292198825);
+    expect(geoKeys.ProjectedCSTypeGeoKey).to.equal(32767);
+    expect(geoKeys.ProjectionGeoKey).to.equal(32767);
+    expect(geoKeys.ProjCoordTransGeoKey).to.equal(1);
+    expect(geoKeys.ProjLinearUnitsGeoKey).to.equal(9003);
+    expect(geoKeys.ProjNatOriginLongGeoKey).to.equal(0);
+    expect(geoKeys.ProjNatOriginLatGeoKey).to.equal(35.68798881647536);
+    expect(geoKeys.ProjFalseEastingGeoKey).to.equal(0);
+    expect(geoKeys.ProjFalseNorthingGeoKey).to.equal(0);
+    expect(geoKeys.ProjScaleAtNatOriginGeoKey).to.equal(1);
+  });
 });
 
 describe('BlockedSource Test', () => {
