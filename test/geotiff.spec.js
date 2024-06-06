@@ -1058,7 +1058,7 @@ describe('writeTests', () => {
     const { fileDirectory } = image;
     expect(normalize(fileDirectory.BitsPerSample)).to.equal(normalize([8]));
     expect(fileDirectory.Compression).to.equal(1);
-    expect(fileDirectory.GeoAsciiParams).to.equal('WGS 84\u0000');
+    expect(fileDirectory.GeoAsciiParams).to.equal('WGS 84|\u0000');
     expect(fileDirectory.ImageLength).to.equal(3);
     expect(fileDirectory.ImageWidth).to.equal(3);
     expect(normalize(fileDirectory.ModelPixelScale)).to.equal(normalize(metadata.ModelPixelScale));
@@ -1114,7 +1114,7 @@ describe('writeTests', () => {
     const { fileDirectory } = image;
     expect(normalize(fileDirectory.BitsPerSample)).to.equal(normalize([8, 8, 8]));
     expect(fileDirectory.Compression).to.equal(1);
-    expect(fileDirectory.GeoAsciiParams).to.equal('WGS 84\u0000');
+    expect(fileDirectory.GeoAsciiParams).to.equal('WGS 84|\u0000');
     expect(fileDirectory.ImageLength).to.equal(3);
     expect(fileDirectory.ImageWidth).to.equal(3);
     expect(normalize(fileDirectory.ModelPixelScale)).to.equal(normalize(metadata.ModelPixelScale));
